@@ -6,14 +6,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
-// import { StockModule } from './stock/stock.module';
+import { StockModule } from './stock/stock.module';
 import { ErrorMessageComponent } from './error-message/error-message.component';
 
 @NgModule({
   declarations: [AppComponent, ErrorMessageComponent],
   imports: [
     BrowserModule,
-    // StockModule,
+    StockModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
