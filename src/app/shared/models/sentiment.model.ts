@@ -9,4 +9,5 @@ export interface SentimentModel {
 export interface SentimentResponseModel{
     data? : SentimentModel[],
     symbol? : string
+    
 }

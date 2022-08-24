@@ -5,4 +5,5 @@ export interface StockDetailsModel {
     symbol : string,
     quote? : QuoteModel,
     company? : CompanyModel
+    
 }

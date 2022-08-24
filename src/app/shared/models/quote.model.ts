@@ -7,4 +7,5 @@ export interface QuoteModel{
   t?: number,
   d? : number,
   dp? : number 
+  
 }
