@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { combineLatestWith, Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
@@ -10,75 +16,92 @@ import { StockDetailsModel } from '../../shared/models/stock-details.model';
 @Component({
   selector: 'app-stock-track',
   templateUrl: './stock-track.component.html',
-  styleUrls: ['./stock-track.component.css']
+  styleUrls: ['./stock-track.component.css'],
 })
 export class StockTrackComponent implements OnInit, OnDestroy {
-  
-  @ViewChild('trackSymbol', {static:true}) refSymbol : ElementRef;
+  @ViewChild('trackSymbol', { static: true }) refSymbol: ElementRef;
 
-  subscriptionSearch : Subscription;
+  subscriptionSearch: Subscription;
 
-  constructor(private stockService : StockService, private toast : ToastrService) { }
+  constructor(
+    private stockService: StockService,
+    private toast: ToastrService
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  trackStock(){
+  trackStock() {
     let searchValue = this.refSymbol.nativeElement.value;
-    if(searchValue && searchValue != null && searchValue!== "" && searchValue.trim() != ""){
+    if (
+      searchValue &&
+      searchValue != null &&
+      searchValue !== '' &&
+      searchValue.trim() != ''
+    ) {
       this.searchQuoteDataAndCompanyName(searchValue);
-    }else{
+    } else {
       //error popup
-      this.toast.error("Invalid Search", "ERROR");
+      this.toast.error('Invalid Search', 'ERROR');
     }
+    this.refSymbol.nativeElement.value = null;
   }
 
-  searchQuoteDataAndCompanyName(symbol : string){
-
-    const quoteDataObservable = this.stockService.getCurrentStockQuoteData(symbol);
+  searchQuoteDataAndCompanyName(symbol: string) {
+    const quoteDataObservable =
+      this.stockService.getCurrentStockQuoteData(symbol);
     const companyDataObservable = this.stockService.getCompanyName(symbol);
 
-    this.subscriptionSearch = quoteDataObservable.pipe(combineLatestWith(companyDataObservable)).subscribe(([quoteDataRes, companyDataRes] : [QuoteModel, CompanyModel]) => {
-      if(quoteDataRes && quoteDataRes !== null && companyDataRes && companyDataRes !== null){
-        const stockDetails : StockDetailsModel = {
-          symbol : symbol,
-          quote : quoteDataRes,
-          company : companyDataRes
+    this.subscriptionSearch = quoteDataObservable
+      .pipe(combineLatestWith(companyDataObservable))
+      .subscribe(
+        ([quoteDataRes, companyDataRes]: [QuoteModel, CompanyModel]) => {
+          if (
+            quoteDataRes &&
+            quoteDataRes !== null &&
+            companyDataRes &&
+            companyDataRes !== null
+          ) {
+            const stockDetails: StockDetailsModel = {
+              symbol: symbol,
+              quote: quoteDataRes,
+              company: companyDataRes,
+            };
+            this.saveStockDetailsToLocalStorage(stockDetails);
+          } else if (quoteDataRes === null) {
+            //error popup
+            this.toast.error('Something Going Wrong With quoteData', 'ERROR');
+          } else if (companyDataRes === null) {
+            //error popup
+            this.toast.error('Something Going Wrong With companyData', 'ERROR');
+          }
+        },
+        (error) => {
+          //error popup
+          console.log(error);
+          this.toast.error('Something Going Wrong', 'ERROR');
         }
-        this.saveStockDetailsToLocalStorage(stockDetails);
-      } else if(quoteDataRes === null){
-        //error popup
-        this.toast.error("Something Going Wrong With quoteData", "ERROR");
-      } else if(companyDataRes === null){
-        //error popup
-        this.toast.error("Something Going Wrong With companyData", "ERROR");
-      }
-    }, error => {
-      //error popup
-      console.log(error);
-      this.toast.error("Something Going Wrong", "ERROR");
-    });
-
+      );
   }
 
-  saveStockDetailsToLocalStorage(stockDetails : StockDetailsModel){
-
-    let tmpStocks : StockDetailsModel[] = this.stockService.getStockDataFromLocalStorage();
-    if(tmpStocks && tmpStocks != null && tmpStocks.length > 0){
-      let filterStockIsExists : StockDetailsModel = tmpStocks.filter(x => x.symbol === stockDetails.symbol)[0];
-      if(filterStockIsExists && filterStockIsExists !== null){
+  saveStockDetailsToLocalStorage(stockDetails: StockDetailsModel) {
+    let tmpStocks: StockDetailsModel[] =
+      this.stockService.getStockDataFromLocalStorage();
+    if (tmpStocks && tmpStocks != null && tmpStocks.length > 0) {
+      let filterStockIsExists: StockDetailsModel = tmpStocks.filter(
+        (x) => x.symbol === stockDetails.symbol
+      )[0];
+      if (filterStockIsExists && filterStockIsExists !== null) {
         //error popup
-        this.toast.error("This Stock Already Exists", "ERROR");
-      }else{
+        this.toast.error('This Stock Already Exists', 'ERROR');
+      } else {
         // tmpStocks.push(stockDetails);
         tmpStocks.unshift(stockDetails);
         this.stockService.setStockDataToLocalStorage(tmpStocks);
       }
-    }else{
+    } else {
       this.stockService.setStockDataToLocalStorage([stockDetails]);
-    }  
+    }
   }
-
 
   ngOnDestroy(): void {
     this.subscriptionSearch?.unsubscribe();
