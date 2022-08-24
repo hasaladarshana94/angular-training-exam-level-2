@@ -6,12 +6,6 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit {
-  name = 'Angular ' + VERSION.major;
-
-  constructor(private toastrService: ToastrService) {}
-
-  ngOnInit() {
-    this.toastrService.success('Message Success!', 'Title Success!');
-  }
+export class AppComponent {
+  constructor() {}
 }
