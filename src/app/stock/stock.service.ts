@@ -80,7 +80,7 @@ export class StockService {
 
   //replace data from local storage
   setStockDataToLocalStorage(stockDetails: StockDetailsModel[]) {
-    if (stockDetails !== null && stockDetails.length > 0) {
+    if (stockDetails !== null) {
       const stockDtlJsonStr = JSON.stringify(stockDetails);
       localStorage.removeItem(LocalStorageEnum.STOCK_DATA.toString());
       localStorage.setItem(
