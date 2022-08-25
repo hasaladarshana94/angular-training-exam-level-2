@@ -40,7 +40,7 @@ export class StockTrackComponent implements OnInit, OnDestroy {
       searchValue !== '' &&
       searchValue.trim() != ''
     ) {
-      this.searchQuoteDataAndCompanyName(searchValue);
+      this.searchQuoteDataAndCompanyName(searchValue.trim());
     } else {
       //error popup
       this.toast.error('Invalid Search', 'ERROR');
