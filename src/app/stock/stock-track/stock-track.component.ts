@@ -97,7 +97,7 @@ export class StockTrackComponent implements OnInit, OnDestroy {
       )[0];
       if (filterStockIsExists && filterStockIsExists !== null) {
         //error popup
-        this.toast.error('This Stock Already Exists', 'ERROR');
+        this.toast.error('This Stock Already Exists. Symbol : ' + filterStockIsExists.symbol, 'ERROR');
       } else {
         // tmpStocks.push(stockDetails);
         tmpStocks.unshift(stockDetails);
