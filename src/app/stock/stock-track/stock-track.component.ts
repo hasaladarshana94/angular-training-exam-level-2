@@ -23,6 +23,8 @@ export class StockTrackComponent implements OnInit, OnDestroy {
 
   subscriptionSearch: Subscription;
 
+  loading: boolean = false;
+
   constructor(
     private stockService: StockService,
     private toast: ToastrService
@@ -47,6 +49,7 @@ export class StockTrackComponent implements OnInit, OnDestroy {
   }
 
   searchQuoteDataAndCompanyName(symbol: string) {
+    this.loading = true;
     const quoteDataObservable =
       this.stockService.getCurrentStockQuoteData(symbol);
     const companyDataObservable = this.stockService.getCompanyName(symbol);
@@ -55,6 +58,7 @@ export class StockTrackComponent implements OnInit, OnDestroy {
       .pipe(combineLatestWith(companyDataObservable))
       .subscribe(
         ([quoteDataRes, companyDataRes]: [QuoteModel, CompanyModel]) => {
+          this.loading = false;
           if (
             quoteDataRes &&
             quoteDataRes !== null &&
@@ -76,6 +80,7 @@ export class StockTrackComponent implements OnInit, OnDestroy {
           }
         },
         (error) => {
+          this.loading = false;
           //error popup
           console.log(error);
           this.toast.error('Something Going Wrong', 'ERROR');

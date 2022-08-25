@@ -6,8 +6,10 @@
     </div>
     <div>
         <input type="text" class="search-box" name="trackSymbol" maxlength="5" #trackSymbol> &nbsp;
-        <button class="btn btn-success" (click)="trackStock()">Track Stock</button>
+        <button class="btn btn-success" (click)="trackStock()" [disabled]="loading">{{!loading ? 'Track Stock' : 'Loading...' }}</button>
+
     </div>
+
     <br>
 </div>
 

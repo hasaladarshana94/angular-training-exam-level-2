@@ -89,6 +89,7 @@ export class StockSentimentInformationComponent implements OnInit, OnDestroy {
         .subscribe(
           (sentimentData: SentimentResponseModel) => {
             this.sentimentDetails = [];
+            this.sentimentDetailsLoading = false;
             if (
               sentimentData &&
               sentimentData !== null &&
@@ -99,7 +100,6 @@ export class StockSentimentInformationComponent implements OnInit, OnDestroy {
             } else {
               this.toastr.error('No Sentiment Data Available', 'ERROR');
             }
-            this.sentimentDetailsLoading = false;
           },
           (error) => {
             //error popup
